@@ -44,6 +44,10 @@ The variable
 .I optind
 is the index of the next element to be processed in
 .IR argv .
+The system initializes this value to 1.
+The caller can reset it to 1 to restart scanning of the same
+.IR argv ,
+or when scanning a new argument vector.
 .sp
 If
 .BR mgetopt ()
@@ -79,6 +83,7 @@ in
 .IR optarg .
 .sp
 Option processing stops as soon as a non-option argument is encountered.
+The special argument "--" forces an end of option-scanning.
 .sp
 If
 .BR mgetopt ()
@@ -97,7 +102,7 @@ sets the external variable
 .I optopt
 to the actual option character.
 .SH "RETURN VALUE"
-if an option was successfully found, then
+If an option was successfully found, then
 .BR mgetopt () 
 returns the option character.
 If all the command-line options have been parsed,
@@ -111,7 +116,16 @@ encounters an option character that was not in
 or if it detects a missing option argument,
 then '?' is returned.
 .SH BUGS
-Probably numerous.  Please report bugs to <mark@martin-fanone.org>
+.BR mgetopt ()
+Full POSIX behavior is not implemented.  
+No error messages are printed to 
+.I sterr 
+for unrecognized options or missing option arguments.
+The
+.I opterr
+variable is not implemented.
+Returning ':' instead of '?' to indicate missing option arguments
+is not supported.
 .SH "SEE ALSO"
 getopt(3)
 .SH AUTHORS

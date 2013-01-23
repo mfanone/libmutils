@@ -2,8 +2,8 @@
 
 #include <string.h>
 
-int optopt;
 int optind = 1;
+int optopt;
 char *optarg;
 
 int mgetopt(int argc, char *argv[], const char *optstr)
@@ -11,31 +11,36 @@ int mgetopt(int argc, char *argv[], const char *optstr)
     char *p;
     int c;
 
-    if (optind >= argc || argv[optind][0] != '-')
+    if (optind >= argc || argv[optind][0] != '-' 
+        || strcmp(argv[optind], "-") == 0)
 	return -1;
+    if (strcmp(argv[optind], "--") == 0) {
+        optind++;
+        return -1;
+    }
     if ((p = strchr(optstr, argv[optind][1])) == NULL) {
 	optopt = argv[optind][1];
 	return '?';
     }
     c = argv[optind][1];
     if (*++p == ':') {
-	if (argv[optind][2] != '\0') {
+        if (argv[optind][2] == '\0') {
+            optarg = argv[++optind];
+            if (++optind > argc) {
+                optopt = c;
+                c = '?';
+            }
+        } else {
 	    optarg = &argv[optind][2];
 	    optind++;
-	} else if (argv[optind + 1] != NULL && argv[optind + 1][0] != '-') {
-	    optarg = argv[++optind];
-	    optind++;
-	} else {
-	    optopt = c;
-	    c = '?';
 	}
     } else {
 	if (argv[optind][2] != '\0') {
 	    argv[optind][1] = '-';
-	    argv[optind]++;
+            argv[optind]++;
 	} else {
-	    optind++;
-	}
+            optind++;
+        }
     }
     return c;
 }
@@ -50,8 +55,6 @@ int main(int argc, char *argv[])
     int aflag = 0, bflag = 0;
     char *cval = NULL;
     int i, c;
-
-    opterr = 0;
 
     while ((c = mgetopt(argc, argv, "abc:")) != -1) {
 	switch (c) {
