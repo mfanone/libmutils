@@ -1,0 +1,32 @@
+.\" See LICENSE file for copyright and license details. */
+
+.TH MGETS 3  2013-01-22 
+.SH NAME
+mgets \- Input of strings
+.SH SYNOPSIS
+.B #include <mutils.h>
+.sp
+.BI "void *mgets(FILE *" fp );
+.sp
+link with
+.IR -lmutils .
+.SH DESCRIPTION
+The
+.BR mgets ()
+function reads a string from
+.I fp
+stopping at a terminating newline or
+.BR EOF ,
+which it replaces with a null byte.
+Memory is dynamically resized to accommodate the string read.
+Caller is responsible for freeing the allocated memory.
+.SH "RETURN VALUE"
+A pointer to the string read is returned on success.
+NULL is returned on error or when end of file occurs while no characters have
+been read.
+.SH BUGS
+Probably numerous.  Please report bugs to <mark@martin-fanone.org>
+.SH "SEE ALSO"
+gets(3)
+.SH AUTHORS
+Mark Martin-Fanone <mark@martin-fanone.org>

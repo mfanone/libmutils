@@ -1,0 +1,118 @@
+.\" See LICENSE file for copyright and license details. */
+
+.TH MGETOPT 3  2013-01-22 
+.SH NAME
+mgetopt \- Parse command line options
+.SH SYNOPSIS
+.B #include <mutils.h>
+.sp
+.BI "int mgetopt(int " argc,
+.BI "char *" argv[],
+.BI "const char *" optstr );
+.sp
+.BI "extern char *" optarg;
+.br
+.BI "extern int " "optind, optopt;"
+.sp
+link with
+.IR -lmutils .
+.SH DESCRIPTION
+.BR mgetopt ()
+is intended to be a minimal
+.BR getopt ()
+replacement for systems that lack
+.IR unistd.h .
+The
+.BR mgetopt ()
+function parses the command-line arguments.
+Its arguments
+.IR argc " and " argv
+are the argument count and array as passed to the 
+.IR main ()
+function on program invocation.
+An element of
+.I argv
+that starts with "-" (and is not exactly "-") is an option element.
+The characters of this element (aside from the initial "-") are option 
+characters.
+If
+.BR mgetopt ()
+is called repeatedly, it returns successively each of the option characters 
+from each of the option elements.
+.sp
+The variable
+.I optind
+is the index of the next element to be processed in
+.IR argv .
+.sp
+If
+.BR mgetopt ()
+finds another option character, it returns that character, updating the
+external variable
+.I optind
+so that the next call to 
+.BR mgetopt ()
+can resume the scan with the following option character or 
+.IR argv -element.
+.sp
+If there are no more option characters,
+.BR mgetopt ()
+returns -1. Then 
+.I optind
+is the index in 
+.I argv
+of the first
+.IR argv -element
+that is not an option.
+.sp
+.I optstr
+is a string containing the legitimate option characters.
+If such a character is followed by a colon, 
+the option requires an argument,
+so 
+.BR mgetopt ()
+places a pointer to the following text in the same 
+.IR argv -element,
+or the text of the following
+.IR argv -element,
+in 
+.IR optarg .
+.sp
+Option processing stops as soon as a non-option argument is encountered.
+.sp
+If
+.BR mgetopt ()
+does not recognize an option character, it stores the character in 
+.IR optopt ,
+and returns '?'.
+.sp
+If
+.BR mgetopt ()
+finds an option character in 
+.I argv
+that was not included in
+.IR optstr ,
+or if it detects a missing option argument, it returns '?' and
+sets the external variable
+.I optopt
+to the actual option character.
+.SH "RETURN VALUE"
+if an option was successfully found, then
+.BR mgetopt () 
+returns the option character.
+If all the command-line options have been parsed,
+then
+.BR mgetopt ()
+returns -1.
+If
+.BR mgetopt ()
+encounters an option character that was not in 
+.IR optstr ,
+or if it detects a missing option argument,
+then '?' is returned.
+.SH BUGS
+Probably numerous.  Please report bugs to <mark@martin-fanone.org>
+.SH "SEE ALSO"
+getopt(3)
+.SH AUTHORS
+Mark Martin-Fanone <mark@martin-fanone.org>
