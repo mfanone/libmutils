@@ -1,5 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 
+#include <assert.h>
 #include <string.h>
 
 int optind = 1;
@@ -10,6 +11,9 @@ int mgetopt(int argc, char *argv[], const char *optstr)
 {
     char *p;
     int c;
+
+    assert(optstr != NULL);
+    assert(strchr(optstr, '-') == NULL);
 
     if (optind >= argc || argv[optind][0] != '-' 
         || strcmp(argv[optind], "-") == 0)
