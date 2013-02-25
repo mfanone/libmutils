@@ -13,18 +13,23 @@ CFLAGS = -g -std=c99 -pedantic -Wall -O0
 ARFLAGS = rcs
 
 #compiler and linker
-#CC = x86_64-w64-mingw32-gcc
-CC = gcc
-#AR = x86_64-w64-mingw32-ar
-AR = ar
+CC = x86_64-w64-mingw32-gcc
+AR = x86_64-w64-mingw32-ar
 
 SRC = mgets.c mgetopt.c
 OBJ = ${SRC:.c=.o}
+TEST_SRC = mytest.c test_main.c
+TEST_CASE = mgets_test1.txt mgets_test2.txt
+TEST_OBJ = ${TEST_SRC:.c=.o}
 BUILDDIR = build
 PWD = $(shell pwd)
 
 vpath %.c ${PWD}/src/
+vpath %.h ${PWD}/src/
+vpath %.c ${PWD}/src/test/
+vpath %.h ${PWD}/src/test/
 vpath %.o ${PWD}/build/
+vpath %.txt ${PWD}/src/test/
 
 
 all: libmutils
@@ -38,9 +43,18 @@ $(OBJ):
 libmutils: $(OBJ)
 	cd ${BUILDDIR} && $(AR)  $(ARFLAGS) libmutils.a $^
 
+$(TEST_OBJ):
+
+mytest: libmutils $(TEST_OBJ) 
+	cd ${BUILDDIR} && $(CC) -o $@ $(TEST_OBJ) $(CFLAGS) -L. -lmutils
+
+test: mytest
+	cp ${BUILDDIR}/mytest src/test
+	cd src/test && ./mytest
+
 clean: 
 	-rm -f *~
-	-cd ${BUILDDIR} && rm -f libmutils.a $(OBJ)
+	-cd ${BUILDDIR} && rm -f libmutils.a $(OBJ) $(TEST_OBJ) mytest
 	-rmdir ${BUILDDIR}
 
 dist: clean
