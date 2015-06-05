@@ -1,5 +1,5 @@
-libmutils - mark's c utility function library
-=============================================
+* libmutils - mark's c utility function library
+
 A getopt() replacement for when I'm stuck on Windows, and a better gets().  
 Both are thoroughly untested.  If you are foolhardy enough to try them out,
 let me know!
